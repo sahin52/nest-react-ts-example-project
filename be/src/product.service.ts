@@ -21,16 +21,45 @@ export class ProductService {
     where?: Prisma.ProductWhereInput;
     orderBy?: Prisma.ProductOrderByWithRelationInput;
   }): Promise<Product[]> {
-    const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.product.findMany({
-      skip,
-      take,
-      cursor,
-      where,
+    const { skip = 0, take = 10, cursor, where, orderBy } = params;
+  
+    // Get the IDs of the products pinned by the user
+    const pinnedProductIds = (await this.prisma.pinnedProduct.findMany({
+      where: { userId: 0 },
+      select: { productId: true },
+    })).map(p => p.productId);
+  
+    // Fetch the pinned products
+    const pinnedProducts = await this.prisma.product.findMany({
+      where: { id: { in: pinnedProductIds }, ...where },
       orderBy,
     });
-  }
+  
+    // Calculate the number of remaining products to fetch
+    const remainingTake = take - pinnedProducts.length;
+  
+    // If there are remaining products to fetch
+    let remainingProducts: Product[] = [];
+    if (remainingTake > 0) {
+      // Fetch the remaining products
+      remainingProducts = await this.prisma.product.findMany({
+        skip: skip - pinnedProducts.length > 0 ? skip - pinnedProducts.length : 0,
+        take: remainingTake,
+        cursor,
+        where: { id: { notIn: pinnedProductIds }, ...where },
+        orderBy,
+      });
+    }
+  
+    // Combine the pinned products and the remaining products
+    const products = [...pinnedProducts, ...remainingProducts];
 
+    // Add the isPinned property to each product
+    return products.map(product => ({
+      ...product,
+      isPinned: pinnedProductIds.includes(product.id),
+    }));
+  }
   async createProduct(data: Prisma.ProductCreateInput): Promise<Product> {
     return this.prisma.product.create({
       data,

@@ -6,4 +6,5 @@ export interface Product {
   published: boolean | null;
   ownerId: number | null;
   price: number;
+  isPinned: boolean;
 }

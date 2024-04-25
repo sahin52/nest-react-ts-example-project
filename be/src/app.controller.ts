@@ -31,8 +31,8 @@ export class AppController {
     @Query('sort') sort: 'asc' | 'desc' = 'asc',
   ): Promise<ProductModel[]> {
     const skip = (page - 1) * pageSize;
-    const orderBy = { price: sort };
-  
+    const orderBy = { price: sort };    
+    
     return this.productService.products({
       // where: { published: true },
       take: Number(pageSize),

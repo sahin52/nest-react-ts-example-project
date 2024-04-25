@@ -12,7 +12,8 @@ interface ProductComponentProps {
   description: string;
   image: string;
   price: number;
-  onPinClicked: any
+  onPinClicked: any;
+  isPinned: boolean;
 }
 
 const ProductCard = (props: ProductComponentProps) => {
@@ -33,7 +34,7 @@ const ProductCard = (props: ProductComponentProps) => {
       <Meta title={props.title} description={props.description} />
       <p>Price: ${props.price}</p>
       <Button
-        type="primary"
+        type= { props.isPinned?"default":"primary"}
         icon={<PushpinOutlined />}
         style={{ position: "absolute", top: 10, right: 10 }}
         onClick={(event) => {
