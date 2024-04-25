@@ -38,8 +38,9 @@ function MainPage() {
     event: React.MouseEvent<HTMLElement, MouseEvent>,
     product: Product
   ) {
+    const endpoint = product.isPinned ? "unpin" : "pin";
     axios
-      .post(`http://localhost:3000/pin/${product.id}/0`, product)
+      .post(`http://localhost:3000/${endpoint}/${product.id}/0`, product)
       .then((res) => {
         console.log(res);
       });

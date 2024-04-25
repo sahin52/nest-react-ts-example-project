@@ -153,8 +153,8 @@ export class ProductService {
     return this.prisma.pinnedProduct.delete({
       where: {
         userId_productId: {
-          userId: userId,
-          productId: productId,
+          userId: Number(userId),
+          productId: Number(productId),
         },
       },
     });
