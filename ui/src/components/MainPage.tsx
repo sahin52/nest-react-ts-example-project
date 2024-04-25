@@ -41,13 +41,18 @@ function MainPage() {
     const endpoint = product.isPinned ? "unpin" : "pin";
     axios
       .post(`http://localhost:3000/${endpoint}/${product.id}/0`, product)
-      .then((res) => {        
-          setProducts(products.map((p) => {
-            if(p.id === product.id){
-              return {...p, isPinned: !product.isPinned};
-            }
-            return p;
-          }));
+      .then((res) => {
+          setProducts(prevProducts => {
+            // Update the isPinned property of the product
+            const updatedProducts = prevProducts.map(p => p.id === product.id ? { ...p, isPinned: !product.isPinned } : p);
+        
+            // Create two new arrays: one for the pinned products and one for the unpinned products
+            const pinnedProducts = updatedProducts.filter(p => p.isPinned);
+            const unpinnedProducts = updatedProducts.filter(p => !p.isPinned);
+        
+            // Combine the two arrays with the pinned products array first
+            return [...pinnedProducts, ...unpinnedProducts];
+          });
         
       });
     // throw new Error("Function not implemented.");
