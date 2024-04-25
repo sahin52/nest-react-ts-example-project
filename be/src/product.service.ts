@@ -67,6 +67,7 @@ export class ProductService {
         description: `Description for product ${id}`,
         price: Math.round(Math.random() * 10000),
         image: imageUrls[Math.round(Math.random() * (imageUrls.length - 1))],
+        published: true,
       };
     });
     console.log('data', data);

@@ -6,6 +6,7 @@ import {
   Body,
   Put,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ProductService } from './product.service';
@@ -24,9 +25,19 @@ export class AppController {
   }
 
   @Get('feed')
-  async getPublishedProducts(): Promise<ProductModel[]> {
+  async getPublishedProducts(
+    @Query('page') page: number = 1,
+    @Query('pageSize') pageSize: number = 10,
+    @Query('sort') sort: 'asc' | 'desc' = 'asc',
+  ): Promise<ProductModel[]> {
+    const skip = (page - 1) * pageSize;
+    const orderBy = { price: sort };
+  
     return this.productService.products({
-      where: { published: true },
+      // where: { published: true },
+      take: Number(pageSize),
+      skip: skip,
+      orderBy: orderBy,
     });
   }
 
