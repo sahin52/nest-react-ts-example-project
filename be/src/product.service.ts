@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from './prisma.service';
-import { Product, Prisma } from '@prisma/client';
+import { Product, Prisma, PinnedProduct } from '@prisma/client';
 
 @Injectable()
 export class ProductService {
@@ -89,6 +89,26 @@ export class ProductService {
   async deleteProduct(where: Prisma.ProductWhereUniqueInput): Promise<Product> {
     return this.prisma.product.delete({
       where,
+    });
+  }
+
+  async pinProduct( productId: number, userId: number): Promise<PinnedProduct> {
+    return this.prisma.pinnedProduct.create({
+      data: {
+        userId: userId,
+        productId: productId,
+      },
+    });
+  }
+
+  async unpinProduct( productId: number, userId: number): Promise<PinnedProduct> {
+    return this.prisma.pinnedProduct.delete({
+      where: {
+        userId_productId: {
+          userId: userId,
+          productId: productId,
+        },
+      },
     });
   }
 }

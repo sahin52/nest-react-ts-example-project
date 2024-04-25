@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { ProductService } from './product.service';
-import { User as UserModel, Product as ProductModel } from '@prisma/client';
+import { User as UserModel, Product as ProductModel, PinnedProduct } from '@prisma/client';
 
 @Controller()
 export class AppController {
@@ -86,5 +86,13 @@ export class AppController {
   @Delete('product/:id')
   async deleteProduct(@Param('id') id: string): Promise<ProductModel> {
     return this.productService.deleteProduct({ id: Number(id) });
+  }
+  @Post('pin/:id/:userId')
+  async pinProduct(@Param('id') id: number, @Param ('userId') userId: number): Promise<PinnedProduct> {
+    return this.productService.pinProduct(id, userId);
+  }
+  @Post('unpin/:id/:userId')
+  async unpinProduct(@Param('id') id: number, @Param ('userId') userId: number): Promise<PinnedProduct> {
+    return this.productService.unpinProduct(id, userId);
   }
 }
