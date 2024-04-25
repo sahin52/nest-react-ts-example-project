@@ -24,9 +24,10 @@ model User {
 model Product {
   id        Int      @default(autoincrement()) @id
   title     String
-  content   String?
+  description   String?
   image String?
   published Boolean? @default(false)
   owner    User?    @relation(fields: [ownerId], references: [id])
   ownerId  Int?
+  price Int
 }

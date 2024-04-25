@@ -41,7 +41,7 @@ export class AppController {
             title: { contains: searchString },
           },
           {
-            content: { contains: searchString },
+            description: { contains: searchString },
           },
         ],
       },
@@ -50,16 +50,22 @@ export class AppController {
 
   @Post('product')
   async createDraft(
-    @Body() productData: { title: string; content?: string; authorEmail: string },
+    @Body() productData: { title: string; description?: string; authorEmail: string },
   ): Promise<ProductModel> {
-    const { title, content, authorEmail } = productData;
+    const { title, description, authorEmail } = productData;
     return this.productService.createProduct({
       title,
-      content,
+      description: description,
       owner: {
         connect: { email: authorEmail },
       },
+      price: Math.round(Math.random() * 10000),
     });
+  }
+
+  @Post('create-mock-products')
+  async createMockProducts() {
+    return this.productService.createMockProducts();
   }
 
   @Post('user')

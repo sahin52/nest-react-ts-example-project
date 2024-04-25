@@ -37,6 +37,44 @@ export class ProductService {
     });
   }
 
+  async createMockProducts() {
+    console.log('Creating mock products');
+    let imageUrls = [
+      'https://hdwallsbox.com/wallpapers/m/89/animals-animal-world-lemur-nature-m88531.jpg',
+      'https://cache.desktopnexus.com/thumbseg/1706/1706298-bigthumbnail.jpg',
+      'https://res.allmacwallpaper.com/pic/Thumbnails/18712_360.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Leopard_in_the_Colchester_Zoo.jpg/300px-Leopard_in_the_Colchester_Zoo.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Mimas_Cassini.jpg/600px-Mimas_Cassini.jpg',
+      'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Daniel_Defoe_Kneller_Style.jpg/501px-Daniel_Defoe_Kneller_Style.jpg',
+    ];
+    let latestProduct = await this.prisma.product.findFirst({
+      orderBy: { id: 'desc' },
+    });
+    console.log('latestProduct', latestProduct);
+    let latestProductId = latestProduct?.id;
+    if (!latestProduct) {
+      latestProductId = 0;
+    }
+    console.log('latestProductId', latestProductId);
+    let productIds = Array.from(
+      { length: 10 },
+      (_, i) => i + latestProductId + 1,
+    );
+    let data: Prisma.ProductCreateInput[] = productIds.map((id, index) => {
+      return {
+        id: id,
+        title: `Product ${id}`,
+        description: `Description for product ${id}`,
+        price: Math.round(Math.random() * 10000),
+        image: imageUrls[Math.round(Math.random() * (imageUrls.length - 1))],
+      };
+    });
+    console.log('data', data);
+    return this.prisma.product.createMany({
+      data,
+    });
+  }
+
   async updateProduct(params: {
     where: Prisma.ProductWhereUniqueInput;
     data: Prisma.ProductUpdateInput;
