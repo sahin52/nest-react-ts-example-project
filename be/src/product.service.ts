@@ -33,7 +33,8 @@ export class ProductService {
     const pinnedProducts = await this.prisma.product.findMany({
       where: { id: { in: pinnedProductIds }, ...where },
       orderBy,
-      skip: skip
+      skip: skip,
+      take: take
     });
   
     // Calculate the number of remaining products to fetch
