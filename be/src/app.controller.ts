@@ -74,7 +74,7 @@ export class AppController {
     });
   }
 
-  @Post('create-mock-products')
+  @Get('create-mock-products')
   async createMockProducts() {
     return this.productService.createMockProducts();
   }
