@@ -41,8 +41,14 @@ function MainPage() {
     const endpoint = product.isPinned ? "unpin" : "pin";
     axios
       .post(`http://localhost:3000/${endpoint}/${product.id}/0`, product)
-      .then((res) => {
-        console.log(res);
+      .then((res) => {        
+          setProducts(products.map((p) => {
+            if(p.id === product.id){
+              return {...p, isPinned: !product.isPinned};
+            }
+            return p;
+          }));
+        
       });
     // throw new Error("Function not implemented.");
   }
@@ -73,7 +79,7 @@ function MainPage() {
         }}
       >
         {products.map((product, index) => (
-          <div style={{ padding: "1em" }}>
+          <div key={index} style={{ padding: "1em" }}>
             <ProductCard key={index} {...product} onPinClicked={onPinClicked} />
           </div>
         ))}
