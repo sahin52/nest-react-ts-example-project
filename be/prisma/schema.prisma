@@ -19,6 +19,7 @@ model User {
   email String  @unique
   name  String?
   products Product[]
+  PinnedProducts PinnedProduct[]
 }
 
 model Product {
@@ -30,4 +31,15 @@ model Product {
   owner    User?    @relation(fields: [ownerId], references: [id])
   ownerId  Int?
   price Int
+  PinnedProducts PinnedProduct[]
+}
+
+model PinnedProduct {
+  id       Int      @id @default(autoincrement())
+  userId   Int
+  productId Int
+  user     User     @relation(fields: [userId], references: [id])
+  product  Product  @relation(fields: [productId], references: [id])
+  
+  @@unique([userId, productId])
 }
