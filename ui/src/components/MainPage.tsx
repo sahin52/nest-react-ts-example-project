@@ -11,9 +11,7 @@ function MainPage() {
   const [sort, setSort] = useState("desc");
   const onSortChange = (value: string, option: any) => {
     axios
-      .get(
-        `http://localhost:3000/feed?page=1&pageSize=10&sort=${value}`
-      )
+      .get(`http://localhost:3000/feed?page=1&pageSize=10&sort=${value}`)
       .then((res) => {
         setProducts(res.data);
         if (sort === "asc") {
@@ -34,7 +32,19 @@ function MainPage() {
         setProducts(res.data);
         setPageNumber(pageNumber + 1);
       });
-  },[]);
+  }, []);
+
+  function onPinClicked(
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    product: Product
+  ) {
+    axios
+      .post(`http://localhost:3000/pin/${product.id}/0`, product)
+      .then((res) => {
+        console.log(res);
+      });
+    // throw new Error("Function not implemented.");
+  }
 
   function onLoadMoreClicked(event: any): void {
     axios
@@ -55,13 +65,16 @@ function MainPage() {
       />
       <div
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          justifyContent: "space-around",
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: "1em",
+          justifyContent: "center",
         }}
       >
         {products.map((product, index) => (
-          <ProductCard key={index} {...product} />
+          <div style={{ padding: "1em" }}>
+            <ProductCard key={index} {...product} onPinClicked={onPinClicked} />
+          </div>
         ))}
       </div>
       <Button type="primary" onClick={onLoadMoreClicked}>

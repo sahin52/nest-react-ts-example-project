@@ -1,24 +1,47 @@
-import React from 'react';
-import { Card } from 'antd';
+import React from "react";
+import { Button, Card } from "antd";
+import { PushpinOutlined } from "@ant-design/icons";
+import axios from "axios";
+import { Product } from "../types/product-types";
 
 const { Meta } = Card;
 
-interface ProductProps {
-    title: string;
-    description: string;
-    image: string;
-    price: number;
+interface ProductComponentProps {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  price: number;
+  onPinClicked: any
 }
 
-const ProductCard = (product: ProductProps) => {
+const ProductCard = (props: ProductComponentProps) => {
+
   return (
     <Card
       hoverable
-      style={{ width: 240 }}
-      cover={<img alt={product.title} src={product.image} />}
+      style={{ width: 240, height: 400, overflow: "hidden" }}
+      cover={
+        <img
+          height={"240"}
+          width="100%"
+          alt={props.title}
+          src={props.image}
+        />
+      }
     >
-      <Meta title={product.title} description={product.description} />
-      <p>Price: ${product.price}</p>
+      <Meta title={props.title} description={props.description} />
+      <p>Price: ${props.price}</p>
+      <Button
+        type="primary"
+        icon={<PushpinOutlined />}
+        style={{ position: "absolute", top: 10, right: 10 }}
+        onClick={(event) => {
+          props.onPinClicked(event, props);
+        }}
+      >
+        Pin
+      </Button>
     </Card>
   );
 };

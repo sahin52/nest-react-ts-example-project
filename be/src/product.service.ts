@@ -93,16 +93,34 @@ export class ProductService {
     });
   }
 
-  async pinProduct( productId: number, userId: number): Promise<PinnedProduct> {
+  async pinProduct(productId: number, userId: number): Promise<PinnedProduct> {
+    let user = await this.prisma.user.findUnique({
+      where: { id:  Number(userId) },
+    });
+    // If the user does not exist, create a mock user
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          id: Number(userId),
+          email: 'mock@example.com',
+          name: 'Mock User',
+          // Add other fields as needed
+        },
+      });
+    }
+
     return this.prisma.pinnedProduct.create({
       data: {
-        userId: userId,
-        productId: productId,
+        userId:  Number(userId),
+        productId:  Number(productId),
       },
     });
   }
 
-  async unpinProduct( productId: number, userId: number): Promise<PinnedProduct> {
+  async unpinProduct(
+    productId: number,
+    userId: number,
+  ): Promise<PinnedProduct> {
     return this.prisma.pinnedProduct.delete({
       where: {
         userId_productId: {
